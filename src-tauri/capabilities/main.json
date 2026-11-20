@@ -1,0 +1,26 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main",
+  "description": "The only window. Grants just the app's own commands; no filesystem, shell, HTTP or plugin JS APIs.",
+  "windows": [
+    "main"
+  ],
+  "local": true,
+  "permissions": [
+    "allow-get-summary",
+    "allow-get-interval-totals",
+    "allow-get-status",
+    "allow-set-paused",
+    "allow-start-focus",
+    "allow-stop-focus",
+    "allow-get-settings",
+    "allow-save-settings",
+    "allow-clear-titles",
+    "allow-list-categories",
+    "allow-set-app-category",
+    "allow-export-data",
+    "allow-delete-all-data",
+    "allow-get-autostart",
+    "allow-set-autostart"
+  ]
+}

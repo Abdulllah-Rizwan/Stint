@@ -1,0 +1,16 @@
+{
+  "name": "stint",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Private, local-first productivity tracker",
+  "license": "MIT",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "icons": "tauri icon src-tauri/icons/app-icon.png",
+    "test": "cargo test --manifest-path src-tauri/Cargo.toml"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.9.4"
+  }
+}

@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stint</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <nav class="sidebar" aria-label="Main">
+      <div class="brand">
+        <img src="logo.png" alt="" width="28" height="28">
+        <span>Stint</span>
+      </div>
+      <button class="nav-item active" data-view="today">Today</button>
+      <button class="nav-item" data-view="week">Week</button>
+      <button class="nav-item" data-view="focus">Focus timer</button>
+      <button class="nav-item" data-view="settings">Settings</button>
+
+      <div class="status-card" id="status-card">
+        <div class="status-line"><span class="dot" id="status-dot"></span><span id="status-text">Starting…</span></div>
+        <div class="status-sub" id="status-sub"></div>
+        <button class="btn btn-small" id="pause-btn">Pause tracking</button>
+      </div>
+    </nav>
+
+    <main class="content">
+      <!-- TODAY -->
+      <section class="view" id="view-today">
+        <header class="view-head">
+          <div>
+            <h1 id="day-title">Today</h1>
+            <p class="muted" id="day-sub"></p>
+          </div>
+          <div class="date-nav">
+            <button class="btn btn-icon" id="day-prev" aria-label="Previous day">‹</button>
+            <button class="btn btn-small" id="day-today">Today</button>
+            <button class="btn btn-icon" id="day-next" aria-label="Next day">›</button>
+          </div>
+        </header>
+
+        <div class="kpis">
+          <div class="kpi"><div class="kpi-label">Work time</div><div class="kpi-value" id="k-work">–</div><div class="kpi-sub" id="k-work-sub"></div></div>
+          <div class="kpi"><div class="kpi-label">Focus time</div><div class="kpi-value" id="k-focus">–</div><div class="kpi-sub" id="k-focus-sub"></div></div>
+          <div class="kpi"><div class="kpi-label">Longest focus session</div><div class="kpi-value" id="k-longest">–</div><div class="kpi-sub" id="k-longest-sub"></div></div>
+          <div class="kpi"><div class="kpi-label">Productive share</div><div class="kpi-value" id="k-score">–</div><div class="kpi-sub" id="k-score-sub"></div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Timeline</h2><div class="legend"><span>Colored by category · hover for details</span><span><i class="sw sw-focus"></i>Focus session</span></div></div>
+          <div class="timeline" id="timeline"></div>
+          <div class="focus-strip" id="focus-strip"></div>
+          <div class="timeline-axis" id="timeline-axis"></div>
+          <div class="card-head sub-head"><span class="muted small">Time per hour</span><div class="legend" id="prod-legend"></div></div>
+          <div class="hourly" id="hourly"></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><h2>Where your time went</h2><span class="muted small">Change an app's category to fix the stats</span></div>
+            <div id="apps" class="app-list"></div>
+          </div>
+          <div class="stack">
+            <div class="card">
+              <div class="card-head"><h2>Categories</h2></div>
+              <div class="cat-bar" id="cat-bar"></div>
+              <div id="cat-list" class="cat-list"></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h2>Focus sessions</h2></div>
+              <div id="sessions" class="session-list"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WEEK -->
+      <section class="view hidden" id="view-week">
+        <header class="view-head">
+          <div>
+            <h1 id="week-title">This week</h1>
+            <p class="muted" id="week-sub"></p>
+          </div>
+          <div class="date-nav">
+            <button class="btn btn-icon" id="week-prev" aria-label="Previous week">‹</button>
+            <button class="btn btn-small" id="week-now">This week</button>
+            <button class="btn btn-icon" id="week-next" aria-label="Next week">›</button>
+          </div>
+        </header>
+        <div class="kpis">
+          <div class="kpi"><div class="kpi-label">Total work</div><div class="kpi-value" id="w-total">–</div></div>
+          <div class="kpi"><div class="kpi-label">Daily average</div><div class="kpi-value" id="w-avg">–</div><div class="kpi-sub">on days you worked</div></div>
+          <div class="kpi"><div class="kpi-label">Focus time</div><div class="kpi-value" id="w-focus">–</div></div>
+          <div class="kpi"><div class="kpi-label">Productive share</div><div class="kpi-value" id="w-score">–</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Daily work time</h2>
+            <div class="legend"><span><i class="sw sw-productive"></i>Productive</span><span><i class="sw sw-other"></i>Other</span><span><i class="sw sw-focus"></i>Focus</span></div>
+          </div>
+          <div class="week-chart" id="week-chart"></div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><div class="card-head"><h2>Top apps this week</h2></div><div id="week-apps" class="app-list"></div></div>
+          <div class="card"><div class="card-head"><h2>Categories</h2></div><div class="cat-bar" id="week-cat-bar"></div><div id="week-cat-list" class="cat-list"></div></div>
+        </div>
+      </section>
+
+      <!-- FOCUS -->
+      <section class="view hidden" id="view-focus">
+        <header class="view-head"><div><h1>Focus timer</h1><p class="muted">Start a timed session. Stint also detects focus sessions automatically.</p></div></header>
+        <div class="card focus-card">
+          <div class="ring-wrap">
+            <svg viewBox="0 0 120 120" class="ring" aria-hidden="true">
+              <circle cx="60" cy="60" r="52" class="ring-bg"></circle>
+              <circle cx="60" cy="60" r="52" class="ring-fg" id="ring-fg"></circle>
+            </svg>
+            <div class="ring-center">
+              <div class="timer" id="timer">25:00</div>
+              <div class="muted small" id="timer-sub">Ready</div>
+            </div>
+          </div>
+          <div class="focus-controls" id="focus-setup">
+            <label class="field">
+              <span>What are you working on?</span>
+              <input type="text" id="focus-label" maxlength="120" placeholder="e.g. Write project proposal">
+            </label>
+            <div class="chips" id="focus-chips">
+              <button class="chip" data-min="25">25 min</button>
+              <button class="chip active" data-min="50">50 min</button>
+              <button class="chip" data-min="90">90 min</button>
+              <label class="chip chip-input"><input type="number" id="focus-custom" min="1" max="480" placeholder="Custom"> min</label>
+            </div>
+            <button class="btn btn-primary btn-large" id="focus-start">Start focus session</button>
+          </div>
+          <div class="focus-controls hidden" id="focus-running">
+            <div class="focus-label" id="focus-running-label"></div>
+            <button class="btn btn-danger btn-large" id="focus-stop">End session</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Today's sessions</h2></div>
+          <div id="focus-history" class="session-list"></div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="view hidden" id="view-settings">
+        <header class="view-head"><div><h1>Settings</h1><p class="muted">Everything Stint records stays in a database on this computer. Nothing is sent anywhere.</p></div></header>
+        <form class="card settings" id="settings-form" novalidate>
+          <h2>Tracking</h2>
+          <label class="row">
+            <span><b>Away after</b><small>No keyboard or mouse input for this long counts as a break.</small></span>
+            <select id="s-idle">
+              <option value="60">1 minute</option><option value="120">2 minutes</option><option value="180">3 minutes</option>
+              <option value="300">5 minutes</option><option value="600">10 minutes</option><option value="900">15 minutes</option>
+              <option value="1800">30 minutes</option>
+            </select>
+          </label>
+          <label class="row">
+            <span><b>Record window titles</b><small>Shows which documents and pages you used. Titles can contain private information. On macOS this also needs Screen Recording permission.</small></span>
+            <input type="checkbox" id="s-titles" class="switch">
+          </label>
+          <label class="row col">
+            <span><b>Never track these apps</b><small>One app name per line, exactly as shown in “Where your time went”.</small></span>
+            <textarea id="s-excluded" rows="4" spellcheck="false"></textarea>
+          </label>
+          <label class="row">
+            <span><b>Launch at login</b><small>Starts minimized in the tray / menu bar.</small></span>
+            <input type="checkbox" id="s-autostart" class="switch">
+          </label>
+
+          <h2>Focus detection</h2>
+          <label class="row">
+            <span><b>Minimum session length</b><small>Productive work at least this long counts as a focus session.</small></span>
+            <select id="s-focus-min">
+              <option value="10">10 minutes</option><option value="15">15 minutes</option><option value="20">20 minutes</option>
+              <option value="25">25 minutes</option><option value="30">30 minutes</option><option value="45">45 minutes</option><option value="60">60 minutes</option>
+            </select>
+          </label>
+          <label class="row">
+            <span><b>Allowed interruption</b><small>Breaks or distractions shorter than this don't end a session.</small></span>
+            <select id="s-focus-tol">
+              <option value="1">1 minute</option><option value="2">2 minutes</option><option value="3">3 minutes</option>
+              <option value="5">5 minutes</option><option value="10">10 minutes</option>
+            </select>
+          </label>
+
+          <h2>Your data</h2>
+          <label class="row">
+            <span><b>Keep history for</b><small>Older activity is deleted automatically.</small></span>
+            <select id="s-retention">
+              <option value="0">Forever</option><option value="30">30 days</option><option value="90">90 days</option>
+              <option value="180">6 months</option><option value="365">1 year</option>
+            </select>
+          </label>
+          <div class="row">
+            <span><b>Export</b><small>Saves a file to your Downloads folder.</small></span>
+            <span class="btn-row"><button type="button" class="btn btn-small" id="export-csv">Export CSV</button><button type="button" class="btn btn-small" id="export-json">Export JSON</button></span>
+          </div>
+          <div class="row">
+            <span><b>Erase window titles</b><small>Removes every stored title, keeping app times.</small></span>
+            <button type="button" class="btn btn-small" id="clear-titles">Erase titles</button>
+          </div>
+          <div class="row">
+            <span><b>Delete all data</b><small>Permanently erases all activity, sessions and category choices.</small></span>
+            <button type="button" class="btn btn-small btn-danger" id="delete-all">Delete everything</button>
+          </div>
+          <div class="form-foot">
+            <span class="muted small" id="settings-msg"></span>
+            <button type="submit" class="btn btn-primary">Save settings</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+  <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

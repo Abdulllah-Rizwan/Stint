@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-clear-titles"
+description = "Enables the clear_titles command without any pre-configured scope."
+commands.allow = ["clear_titles"]
+
+[[permission]]
+identifier = "deny-clear-titles"
+description = "Denies the clear_titles command without any pre-configured scope."
+commands.deny = ["clear_titles"]

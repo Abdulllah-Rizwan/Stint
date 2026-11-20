@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-get-interval-totals"
+description = "Enables the get_interval_totals command without any pre-configured scope."
+commands.allow = ["get_interval_totals"]
+
+[[permission]]
+identifier = "deny-get-interval-totals"
+description = "Denies the get_interval_totals command without any pre-configured scope."
+commands.deny = ["get_interval_totals"]
